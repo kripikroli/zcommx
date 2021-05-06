@@ -1,0 +1,78 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <title>
+    ZcommeX | {% block title %}{% endblock title %}
+  </title>
+
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="{% static 'cms/modules/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'cms/modules/fontawesome/css/all.min.css' %}">
+
+  <!-- CSS Libraries -->
+  <link rel="stylesheet" href="{% static 'cms/modules/jqvmap/dist/jqvmap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'cms/modules/summernote/summernote-bs4.css' %}">
+  <link rel="stylesheet" href="{% static 'cms/modules/owlcarousel2/dist/assets/owl.carousel.min.css' %}">
+  <link rel="stylesheet" href="{% static 'cms/modules/owlcarousel2/dist/assets/owl.theme.default.min.css' %}">
+
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="{% static 'cms/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'cms/css/components.css' %}">
+
+  {% block custom_css %}
+  {% endblock custom_css %}
+</head>
+
+<body>
+  <div id="app">
+    <div class="main-wrapper main-wrapper-1">
+      {% include "cms/navbar.html" %}
+
+      {% include "cms/sidebar.html" %}
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+            <div class="section-header">
+                <h1>{% block page_title %}{% endblock page_title %}</h1>
+            </div>
+            {% block page_content %}
+            
+            {% endblock page_content %}
+        </section>
+      </div>
+      {% include "cms/footer.html" %}
+    </div>
+  </div>
+
+  <!-- General JS Scripts -->
+  <script src="{% static 'cms/modules/jquery.min.js' %}"></script>
+  <script src="{% static 'cms/modules/popper.js' %}"></script>
+  <script src="{% static 'cms/modules/tooltip.js' %}"></script>
+  <script src="{% static 'cms/modules/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'cms/modules/nicescroll/jquery.nicescroll.min.js' %}"></script>
+  <script src="{% static 'cms/modules/moment.min.js' %}"></script>
+  <script src="{% static 'cms/js/stisla.js' %}"></script>
+  
+  <!-- JS Libraies -->
+  <script src="{% static 'cms/modules/jquery.sparkline.min.js' %}"></script>
+  <script src="{% static 'cms/modules/chart.min.js' %}"></script>
+  <script src="{% static 'cms/modules/owlcarousel2/dist/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'cms/modules/summernote/summernote-bs4.js' %}"></script>
+  <script src="{% static 'cms/modules/chocolat/dist/js/jquery.chocolat.min.js' %}"></script>
+
+  <!-- Page Specific JS File -->
+  <script src="{% static 'cms/js/page/index.js' %}"></script>
+  
+  <!-- Template JS File -->
+  <script src="{% static 'cms/js/scripts.js' %}"></script>
+  <script src="{% static 'cms/js/custom.js' %}"></script>
+
+  {% block custom_js %}
+  {% endblock custom_js %}
+</body>
+</html>
