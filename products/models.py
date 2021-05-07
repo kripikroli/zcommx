@@ -1,5 +1,6 @@
 from django.db import models
-from profiles.models import MerchantUser 
+from profiles.models import MerchantUser
+from django.urls import reverse
 
 class Category(models.Model):
     name=models.CharField(max_length=255)
@@ -9,6 +10,9 @@ class Category(models.Model):
     is_active=models.IntegerField(default=1)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return reverse("cms:category_list_view")
 
     def __str__(self):
         return f"{self.name}"
@@ -22,6 +26,9 @@ class SubCategory(models.Model):
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
     category_id=models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse("cms:sub_category_list_view")
 
     def __str__(self):
         return f"{self.name}"

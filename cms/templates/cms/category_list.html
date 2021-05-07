@@ -1,0 +1,43 @@
+{% extends "cms/base.html" %}
+
+{% block title %}
+    Category List
+{% endblock title %}
+
+{% block page_title %}
+    Category List
+{% endblock page_title %}
+
+{% block page_content %}
+    <div class="row">
+    {% for category in category_list %}
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <article class="article article-style-b">
+                <div class="article-header">
+                <div class="article-image" data-background="/media/{{ category.thumbnail }}">
+                </div>
+                <div class="article-badge">
+                    <button type="button" class="btn btn-danger">
+                        {{ category.name }} <span class="badge badge-transparent"><i class="fas fa-poll-h"></i></span>
+                    </button>
+                </div>
+                </div>
+                <div class="article-details">
+                <div class="article-title">
+                    <h2><a href="#">{{ category.name }}</a></h2>
+                </div>
+                <p>{{ category.description }}</p>
+                <div class="article-cta">
+                    <label class="custom-switch mt-2 float-left">
+                        <input type="checkbox" name="custom-switch-checkbox" onclick="return false;" class="custom-switch-input" {% if category.is_active == 1 %}checked{% endif %}>
+                        <span class="custom-switch-indicator"></span>
+                        <span class="custom-switch-description">Active</span>
+                    </label>
+                    <a href="{% url 'cms:category_update_view' category.id %}"><i class="fas fa-edit"> Edit </i></a>
+                </div>
+                </div>
+            </article>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock page_content %}

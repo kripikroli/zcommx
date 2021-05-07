@@ -32,7 +32,7 @@
     <div class="main-wrapper main-wrapper-1">
       {% include "cms/navbar.html" %}
 
-      {% include "cms/sidebar.html" %}
+      {% include "cms/sidebar.html" with id=form.instance.id %}
 
       <!-- Main Content -->
       <div class="main-content">
@@ -40,6 +40,21 @@
             <div class="section-header">
                 <h1>{% block page_title %}{% endblock page_title %}</h1>
             </div>
+            {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == "success" %}
+                  <div id="success-alert" class="alert alert-success">
+                  {{ message }}
+                  </div>
+                {% endif %}
+                {% if message.tags == "danger" %}
+                  <div class="alert alert-danger">
+                  {{ message }}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            
+            {% endif %}
             {% block page_content %}
             
             {% endblock page_content %}
@@ -50,27 +65,27 @@
   </div>
 
   <!-- General JS Scripts -->
-  <script src="{% static 'cms/modules/jquery.min.js' %}"></script>
-  <script src="{% static 'cms/modules/popper.js' %}"></script>
-  <script src="{% static 'cms/modules/tooltip.js' %}"></script>
-  <script src="{% static 'cms/modules/bootstrap/js/bootstrap.min.js' %}"></script>
-  <script src="{% static 'cms/modules/nicescroll/jquery.nicescroll.min.js' %}"></script>
-  <script src="{% static 'cms/modules/moment.min.js' %}"></script>
-  <script src="{% static 'cms/js/stisla.js' %}"></script>
+  <script src="{% static 'cms/modules/jquery.min.js' %}" defer></script>
+  <script src="{% static 'cms/modules/popper.js' %}" defer></script>
+  <script src="{% static 'cms/modules/tooltip.js' %}" defer></script>
+  <script src="{% static 'cms/modules/bootstrap/js/bootstrap.min.js' %}" defer></script>
+  <script src="{% static 'cms/modules/nicescroll/jquery.nicescroll.min.js' %}" defer></script>
+  <script src="{% static 'cms/modules/moment.min.js' %}" defer></script>
+  <script src="{% static 'cms/js/stisla.js' %}" defer></script>
   
   <!-- JS Libraies -->
-  <script src="{% static 'cms/modules/jquery.sparkline.min.js' %}"></script>
-  <script src="{% static 'cms/modules/chart.min.js' %}"></script>
-  <script src="{% static 'cms/modules/owlcarousel2/dist/owl.carousel.min.js' %}"></script>
-  <script src="{% static 'cms/modules/summernote/summernote-bs4.js' %}"></script>
-  <script src="{% static 'cms/modules/chocolat/dist/js/jquery.chocolat.min.js' %}"></script>
+  <script src="{% static 'cms/modules/jquery.sparkline.min.js' %}" defer></script>
+  <script src="{% static 'cms/modules/chart.min.js' %}" defer></script>
+  <script src="{% static 'cms/modules/owlcarousel2/dist/owl.carousel.min.js' %}" defer></script>
+  <script src="{% static 'cms/modules/summernote/summernote-bs4.js' %}" defer></script>
+  <script src="{% static 'cms/modules/chocolat/dist/js/jquery.chocolat.min.js' %}" defer></script>
 
   <!-- Page Specific JS File -->
-  <script src="{% static 'cms/js/page/index.js' %}"></script>
+  {% comment %} <script src="{% static 'cms/js/page/index.js' %}"></script> {% endcomment %}
   
   <!-- Template JS File -->
-  <script src="{% static 'cms/js/scripts.js' %}"></script>
-  <script src="{% static 'cms/js/custom.js' %}"></script>
+  <script src="{% static 'cms/js/scripts.js' %}" defer></script> 
+  <script src="{% static 'cms/js/custom.js' %}" defer></script>  
 
   {% block custom_js %}
   {% endblock custom_js %}
