@@ -1,0 +1,110 @@
+{% extends "cms/base.html" %}
+
+{% load static %}
+
+{% block custom_css %}
+    <link rel="stylesheet" href="{% static 'cms/custom.css' %}">
+{% endblock custom_css %}
+
+{% block custom_js %}
+    <script src="{% static 'cms/category.js' %}" defer></script>
+{% endblock custom_js %}
+
+{% block title %}
+    Create Merchant
+{% endblock title %}
+
+
+{% block page_title %}
+    Create Merchant
+{% endblock page_title %}
+
+{% block page_content %}
+
+<div class="row">
+    <div class="col-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Merchant</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form  %}
+                    <div class="form-group">
+                        
+                        <label>{{ field.label }}</label>
+                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.name }}" class="form-control">
+                    
+                        {% if field.errors %}
+                        <div class="alert alert-danger" style="margin: 10px">
+                            {{ field.errors }}
+                        </div>
+                        
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <div class="form-group">
+                        <label>Profile Image</label>
+                        <input type="file" name="profile_pic" id="profile_pic" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Company name</label>
+                        <input type="text" name="company_name" id="company_name" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gst details</label>
+                        <input type="text" name="gst_details" id="gst_details" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Street address</label>
+                        <input type="text" name="address_line_1" id="address_line_1" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" name="address_town" id="address_town" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" name="address_region" id="address_region" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Country</label>
+                        <input type="text" name="address_country" id="address_country" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Zip code</label>
+                        <input type="text" name="address_zip_code" id="address_zip_code" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Biography</label>
+                        <input type="text" name="bio" id="bio" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="custom-switch mt-2">
+                        <input type="checkbox" name="is_added_by_admin" class="custom-switch-input">
+                        <span class="custom-switch-indicator"></span>
+                        <span class="custom-switch-description">Is added by Admin?</span>
+                      </label>
+                    </div>
+
+
+                    <button href="" type="submit" class="btn btn-primary btn-block">SAVE MERCHANT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock page_content %}
+

@@ -9,7 +9,10 @@ from .views import (
     CategoryUpdateView,
     SubCategoryListView,
     SubCategoryCreateView,
-    SubCategoryUpdateView
+    SubCategoryUpdateView,
+    UserMerchantListView,
+    UserMerchantCreateView,
+    UserMerchantUpdateView
 )
 
 app_name = 'cms'
@@ -32,5 +35,10 @@ urlpatterns = [
     path('dashboard/sub_category_list', SubCategoryListView.as_view(), name='sub_category_list_view'),
     path('dashboard/sub_category_create', SubCategoryCreateView.as_view(), name='sub_category_create_view'),
     path('dashboard/sub_category_update/<slug:pk>', SubCategoryUpdateView.as_view(), name='sub_category_update_view'),
+
+    # Merchants
+    path('dashboard/user_merchant_list', UserMerchantListView.as_view(), name='user_merchant_list_view'),
+    path('dashboard/user_merchant_create', UserMerchantCreateView.as_view(), name='user_merchant_create_view'),
+    path('dashboard/user_merchant_update/<slug:pk>', UserMerchantUpdateView.as_view(), name='user_merchant_update_view'),
 
 ]

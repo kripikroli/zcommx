@@ -1,9 +1,16 @@
 {% load static %}
 
+{% comment %} Merchants {% endcomment %}
+{% url 'cms:user_merchant_list_view' as user_merchant_list %}
+{% url 'cms:user_merchant_create_view' as user_merchant_create %}
+{% url 'cms:user_merchant_update_view' id as user_merchant_update %}
+
+{% comment %} Categories {% endcomment %}
 {% url 'cms:category_list_view' as category_list %}
 {% url 'cms:category_create_view' as category_create %}
 {% url 'cms:category_update_view' id as category_update %}
 
+{% comment %} SubCategories {% endcomment %}
 {% url 'cms:sub_category_list_view' as sub_category_list %}
 {% url 'cms:sub_category_create_view' as sub_category_create %}
 {% url 'cms:sub_category_update_view' id as sub_category_update %}
@@ -19,9 +26,18 @@
             <ul class="sidebar-menu">
                 <li class="menu-header">Dashboard</li>
 
+                {% comment %} Mechants Menu {% endcomment %}
+                <li class="dropdown {% if request.path == user_merchant_list %}active{% endif %}{% if request.path == user_merchant_create %}active{% endif %}{% if request.path == user_merchant_update %}active{% endif %}">
+                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-users"></i><span>Merchants</span></a>
+                    <ul class="dropdown-menu">
+                        <li class='{% if request.path == user_merchant_list %}active{% endif %}'><a class="nav-link" href="{% url 'cms:user_merchant_list_view' %}">All Merchants</a></li>
+                        <li class='{% if request.path == user_merchant_create %}active{% endif %}'><a class="nav-link" href="{% url 'cms:user_merchant_create_view' %}">Add Merchant</a></li>
+                    </ul>
+                </li>
+
                 {% comment %} Category Menu {% endcomment %}
                 <li class="dropdown {% if request.path == category_list %}active{% endif %}{% if request.path == category_create %}active{% endif %}{% if request.path == category_update %}active{% endif %}">
-                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Categories</span></a>
+                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-sitemap"></i><span>Categories</span></a>
                     <ul class="dropdown-menu">
                         <li class='{% if request.path == category_list %}active{% endif %}'><a class="nav-link" href="{% url 'cms:category_list_view' %}">All Categories</a></li>
                         <li class='{% if request.path == category_create %}active{% endif %}'><a class="nav-link" href="{% url 'cms:category_create_view' %}">Add Category</a></li>
@@ -30,7 +46,7 @@
 
                 {% comment %} SubCategory Menu {% endcomment %}
                 <li class="dropdown {% if request.path == sub_category_list %}active{% endif %}{% if request.path == sub_category_create %}active{% endif %}{% if request.path == sub_category_update %}active{% endif %}">
-                    <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Sub-Categories</span></a>
+                    <a href="#" class="nav-link has-dropdown"><i class="far fa-object-group"></i><span>Sub-Categories</span></a>
                     <ul class="dropdown-menu">
                         <li class='{% if request.path == sub_category_list %}active{% endif %}'><a class="nav-link" href="{% url 'cms:sub_category_list_view' %}">All Sub-Categories</a></li>
                         <li class='{% if request.path == sub_category_create %}active{% endif %}'><a class="nav-link" href="{% url 'cms:sub_category_create_view' %}">Add Sub-Category</a></li>

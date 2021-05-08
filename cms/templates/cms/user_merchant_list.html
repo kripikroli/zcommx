@@ -1,0 +1,71 @@
+{% extends "cms/base.html" %}
+
+{% block title %}
+    Merchant List
+{% endblock title %}
+
+{% block page_title %}
+    Merchant List
+{% endblock page_title %}
+
+{% block page_content %}
+    <div class="row">
+    {% for merchant in merchantuser_list %}
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <article class="article article-style-b">
+                <div class="article-header">
+                    <div class="article-image" data-background="/media/{{ merchant.profile_pic }}"></div>
+                    <div class="article-badge">
+                        <button type="button" class="btn btn-danger btn-icon icon-left">
+                            <i class="fas fa-user"> </i>{{ merchant.auth_user_id.username }}
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="article-details">
+                    <div class="article-title">
+                        <h3>{{ merchant.company_name }}</h3>
+                    </div>
+                    
+                    <dl class="row">
+
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9">{{ merchant.auth_user_id.first_name }} {{ merchant.auth_user_id.last_name }}</dd>
+
+                        <dt class="col-sm-3">Email</dt>
+                        <dd class="col-sm-9">{{ merchant.auth_user_id.email }}</dd>
+
+                        <dt class="col-sm-3">GST Details</dt>
+                        <dd class="col-sm-9">{{ merchant.gst_details }}</dd>
+
+                        <dt class="col-sm-3">Address</dt>
+                        <dd class="col-sm-9">
+                            
+                                {% if merchant.address_line_1 %}{{ merchant.address_line_1 }}{% endif %}
+                                {% if merchant.address_line_2 %}, {{ merchant.address_line_2 }}{% endif %}
+                            <br>
+                                {% if merchant.address_town %}{{ merchant.address_town }}{% endif %}
+                                {% if merchant.address_region %}, {{ merchant.address_region }}{% endif %}
+                            <br>
+                                {% if merchant.address_country %}{{ merchant.address_country }}{% endif %}
+                                {% if merchant.address_zip_code %}, {{ merchant.address_zip_code }}{% endif %}
+                            
+                        </dd>
+
+                        <dt class="col-sm-3">Biography</dt>
+                        <dd class="col-sm-9">{{ merchant.bio }}</dd>
+                    </dl>
+                    <div class="article-cta">
+                        <label class="custom-switch mt-2 float-left">
+                            <input type="checkbox" name="is_added_by_admin" onclick="return false;" class="custom-switch-input" {% if merchant.is_added_by_admin %}checked{% endif %}>
+                            <span class="custom-switch-indicator"></span>
+                            <span class="custom-switch-description">Is added by Admin?</span>
+                        </label>
+                        <a href="{% url 'cms:user_merchant_update_view' merchant.auth_user_id.id %}"><i class="fas fa-edit mr-1"></i>EDIT</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock page_content %}

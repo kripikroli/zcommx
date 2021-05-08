@@ -36,6 +36,7 @@ class MerchantUser(models.Model):
     profile_pic=models.ImageField(upload_to='avatars', default='no_photo.png')
     auth_user_id=models.OneToOneField(CustomUser, related_name='merchant_users', on_delete=models.CASCADE)
     bio=models.TextField(default="no bio...")
+    company_name=models.CharField(max_length=255, null=True, blank=True)
     gst_details=models.CharField(max_length=255, null=True, blank=True)
     address_line_1=models.CharField(max_length=255, null=True, blank=True)
     address_line_2=models.CharField(max_length=255, null=True, blank=True)
@@ -43,6 +44,7 @@ class MerchantUser(models.Model):
     address_region=models.CharField(max_length=120, null=True, blank=True)
     address_country=models.CharField(max_length=120, null=True, blank=True)
     address_zip_code=models.CharField(max_length=20, null=True, blank=True)
+    is_added_by_admin=models.BooleanField(default=False)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
     
