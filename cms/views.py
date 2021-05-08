@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.messages.views import messages
 from django.core.files.storage import FileSystemStorage
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -31,6 +32,30 @@ class UserMerchantListView(SuccessMessageMixin, ListView):
     success_message = 'Merchant added successfully!'
     fields = '__all__'
     template_name = 'cms/user_merchant_list.html'
+
+    # Number of subcategories to paginate
+    paginate_by = 4
+
+    def get_queryset(self):
+
+        filter_val = self.request.GET.get('filter', '')
+        order_by = self.request.GET.get('orderby', 'id')
+
+        if filter_val != '':
+            result = MerchantUser.objects.filter(Q(company_name__contains=filter_val) | Q(auth_user_id__first_name__icontains=filter_val) | Q(auth_user_id__last_name__icontains=filter_val) | Q(bio__contains=filter_val)).order_by(order_by)
+        else:
+            result = MerchantUser.objects.all().order_by(order_by)
+
+        return result
+
+    def get_context_data(self, **kwargs):
+
+        context = super(UserMerchantListView, self).get_context_data(**kwargs)
+        context['filter'] = self.request.GET.get('filter', '')
+        context['orderby'] = self.request.GET.get('orderby', 'id')
+        context['all_table_fields'] = MerchantUser._meta.get_fields()
+
+        return context
 
 
 class UserMerchantCreateView(SuccessMessageMixin, CreateView):
@@ -141,6 +166,31 @@ class CategoryListView(ListView):
     model = Category
     template_name = 'cms/category_list.html'
 
+    # Number of categories to paginate
+    paginate_by = 8
+
+    def get_queryset(self):
+
+        filter_val = self.request.GET.get('filter', '')
+        order_by = self.request.GET.get('orderby', 'id')
+
+        if filter_val != '':
+            result = Category.objects.filter(Q(name__contains=filter_val) | Q(description__contains=filter_val)).order_by(order_by)
+        else:
+            result = Category.objects.all().order_by(order_by)
+
+        return result
+
+    def get_context_data(self, **kwargs):
+
+        context = super(CategoryListView, self).get_context_data(**kwargs)
+        context['filter'] = self.request.GET.get('filter', '')
+        context['orderby'] = self.request.GET.get('orderby', 'id')
+        context['all_table_fields'] = Category._meta.get_fields()
+
+        return context
+
+
 class CategoryCreateView(SuccessMessageMixin, CreateView):
     model = Category
     success_message = 'Category added successfully!'
@@ -163,6 +213,31 @@ cms:sub_category_update
 class SubCategoryListView(ListView):
     model = SubCategory
     template_name = 'cms/sub_category_list.html'
+
+    # Number of subcategories to paginate
+    paginate_by = 2
+
+    def get_queryset(self):
+
+        filter_val = self.request.GET.get('filter', '')
+        order_by = self.request.GET.get('orderby', 'id')
+
+        if filter_val != '':
+            result = SubCategory.objects.filter(Q(name__contains=filter_val) | Q(description__contains=filter_val)).order_by(order_by)
+        else:
+            result = SubCategory.objects.all().order_by(order_by)
+
+        return result
+
+    def get_context_data(self, **kwargs):
+
+        context = super(SubCategoryListView, self).get_context_data(**kwargs)
+        context['filter'] = self.request.GET.get('filter', '')
+        context['orderby'] = self.request.GET.get('orderby', 'id')
+        context['all_table_fields'] = SubCategory._meta.get_fields()
+
+        return context
+
 
 class SubCategoryCreateView(SuccessMessageMixin, CreateView):
     model = SubCategory

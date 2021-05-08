@@ -10,6 +10,34 @@
 
 {% block page_content %}
     <div class="row">
+        <div class="col-lg-12">
+            <div class="search-element">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="float-left" style="width: 25%">
+
+                            <p class="lead pt-0 pb-0"><span>SORTED BY</span>: 
+                                <a href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby=id">ID | </a>
+                                <a href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby=name">NAME | </a>
+                                <a href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby=description">DESCRIPTION</a>
+                            </p>
+                        </div>
+                        <form method="GET">
+                            <div class="input-group float-right" style="width: 25%">
+                                <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" name="filter" value="{{ filter }}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
     {% for merchant in merchantuser_list %}
         <div class="col-12 col-sm-6 col-md-6 col-lg-3">
             <article class="article article-style-b">
@@ -67,5 +95,32 @@
             </article>
         </div>
     {% endfor %}
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <nav aria-label="Merchant Pagination">
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item"><a class="page-link" href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby={{ orderby }}&page={{ page_obj.previous_page_number }}">Previous</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                            {% endif %}
+                            {% for i in paginator.page_range %}
+                                    <li class="page-item {% if i == page_obj.number %}active{% endif %}"><a class="page-link" href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby={{ orderby }}&page={{ i }}">{{ i }}</a></li>
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                                <li class="page-item"><a class="page-link" href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby={{ orderby }}&page={{ page_obj.next_page_number }}">Next</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                            {% endif %}
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock page_content %}
