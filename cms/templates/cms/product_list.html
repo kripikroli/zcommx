@@ -1,0 +1,110 @@
+{% extends "cms/base.html" %}
+
+{% block title %}
+    Product List
+{% endblock title %}
+
+{% block page_title %}
+    Product List
+{% endblock page_title %}
+
+{% block page_content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="search-element">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="float-left" style="width: 25%">
+
+                            <p class="lead pt-0 pb-0"><span>SORTED BY</span>: 
+                                <a href="{% url 'cms:product_list_view' %}?filter={{ filter }}&orderby=name">NAME | </a>
+                                <a href="{% url 'cms:product_list_view' %}?filter={{ filter }}&orderby=short_description">DESCRIPTION</a>
+                            </p>
+                        </div>
+                        <form method="GET">
+                            <div class="input-group float-right" style="width: 25%">
+                                <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" name="filter" value="{{ filter }}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+    {% for obj in object_list %}
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <article class="article article-style-b">
+                <div class="article-header">
+                    <div class="article-image" data-background="/media/{{ obj.media.media_content }}"></div>
+                    <div class="article-badge">
+                        <button type="button" class="btn btn-danger btn-icon icon-left">
+                            <i class="fas fa-list"> </i>{{ obj.product.subcategory_id.name }}
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="article-details">
+                    <div class="article-title">
+                        <h3>{{ obj.product.name }}</h3>
+                    </div>
+                    
+                    <dl class="row">
+
+                        <dt class="col-sm-3">Brand</dt>
+                        <dd class="col-sm-9">{{ obj.product.brand }}</dd>
+
+                        <dt class="col-sm-3">Price</dt>
+                        <dd class="col-sm-9">{{ obj.product.price }}</dd>
+
+                        <dt class="col-sm-3">Description</dt>
+                        <dd class="col-sm-9">{{ obj.product.short_description }}</dd>
+
+                        <dt class="col-sm-3">Merchant</dt>
+                        <dd class="col-sm-9">{{ obj.product.merchant_id.auth_user_id.first_name }} {{ obj.product.merchant_id.auth_user_id.last_name }}</dd>
+                        
+                        <dt class="col-sm-3">Company</dt>
+                        <dd class="col-sm-9">{{ obj.product.merchant_id.company_name }}</dd>
+
+                    </dl>
+                    <div class="article-cta">
+                        <a href=""><i class="fas fa-edit mr-1"></i>EDIT</a> 
+                    </div>
+                </div>
+            </article>
+        </div>
+    {% endfor %}
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <nav aria-label="Merchant Pagination">
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item"><a class="page-link" href="{% url 'cms:product_list_view' %}?filter={{ filter }}&orderby={{ orderby }}&page={{ page_obj.previous_page_number }}">Previous</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                            {% endif %}
+                            {% for i in paginator.page_range %}
+                                    <li class="page-item {% if i == page_obj.number %}active{% endif %}"><a class="page-link" href="{% url 'cms:product_list_view' %}?filter={{ filter }}&orderby={{ orderby }}&page={{ i }}">{{ i }}</a></li>
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                                <li class="page-item"><a class="page-link" href="{% url 'cms:product_list_view' %}?filter={{ filter }}&orderby={{ orderby }}&page={{ page_obj.next_page_number }}">Next</a></li>
+                            {% else %}
+                                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                            {% endif %}
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

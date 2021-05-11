@@ -1,18 +1,26 @@
 from django.urls import path
 
 from .views import (
+
+    home_view,
+
     cms_login_view,
     cms_logout_view,
-    home_view,
+
     CategoryListView,
     CategoryCreateView,
     CategoryUpdateView,
+
     SubCategoryListView,
     SubCategoryCreateView,
     SubCategoryUpdateView,
+
     UserMerchantListView,
     UserMerchantCreateView,
-    UserMerchantUpdateView
+    UserMerchantUpdateView,
+    
+    ProductListView,
+    ProductCreateView,
 )
 
 app_name = 'cms'
@@ -41,4 +49,7 @@ urlpatterns = [
     path('dashboard/user_merchant_create', UserMerchantCreateView.as_view(), name='user_merchant_create_view'),
     path('dashboard/user_merchant_update/<slug:pk>', UserMerchantUpdateView.as_view(), name='user_merchant_update_view'),
 
+    # Products
+    path('dashboard/product_list', ProductListView.as_view(),name="product_list_view"),
+    path('dashboard/product_create', ProductCreateView.as_view(),name="product_create_view"),
 ]

@@ -15,6 +15,10 @@
 {% url 'cms:sub_category_create_view' as sub_category_create %}
 {% url 'cms:sub_category_update_view' id as sub_category_update %}
 
+{% comment %} Product {% endcomment %}
+{% url 'cms:product_list_view' as product_list %}
+{% url 'cms:product_create_view' as product_create %}
+
 <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
             <div class="sidebar-brand">
@@ -50,6 +54,15 @@
                     <ul class="dropdown-menu">
                         <li class='{% if request.path == sub_category_list %}active{% endif %}'><a class="nav-link" href="{% url 'cms:sub_category_list_view' %}">All Sub-Categories</a></li>
                         <li class='{% if request.path == sub_category_create %}active{% endif %}'><a class="nav-link" href="{% url 'cms:sub_category_create_view' %}">Add Sub-Category</a></li>
+                    </ul>
+                </li>
+
+                {% comment %} Product Menu {% endcomment %}
+                <li class="dropdown {% if request.path == product_list %}active{% endif %}{% if request.path == product_create %}active{% endif %}">
+                    <a href="#" class="nav-link has-dropdown"><i class="far fa-object-group"></i><span>Products</span></a>
+                    <ul class="dropdown-menu">
+                        <li class='{% if request.path == product_list %}active{% endif %}'><a class="nav-link" href="{% url 'cms:product_list_view' %}">All Products</a></li>
+                        <li class='{% if request.path == product_create %}active{% endif %}'><a class="nav-link" href="{% url 'cms:product_create_view' %}">Add Product</a></li>
                     </ul>
                 </li>
 

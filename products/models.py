@@ -44,7 +44,8 @@ class Product(models.Model):
     is_active=models.IntegerField(default=1)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
-    merchant_id=models.ForeignKey(MerchantUser, related_name='products', on_delete=models.CASCADE)
+    subcategory_id=models.ForeignKey(SubCategory, default=1, related_name='products_subcategory', on_delete=models.CASCADE)
+    merchant_id=models.ForeignKey(MerchantUser, related_name='products_merchant', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.name}"
@@ -54,6 +55,19 @@ class ProductImage(models.Model):
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
     product_id=models.ForeignKey(Product, related_name='product_images', on_delete=models.CASCADE)
+
+
+class ProductMedia(models.Model):
+    MEDIA_TYPE_CHOICES=((1,"Image"),(2,"Video"))
+    media_type=models.IntegerField(choices=MEDIA_TYPE_CHOICES, default=1)
+    media_content=models.FileField(upload_to='products')
+    is_active=models.IntegerField(default=1)
+    created=models.DateTimeField(auto_now_add=True)
+    updated=models.DateTimeField(auto_now=True)
+    product_id=models.ForeignKey(Product, related_name='product_medias', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.created}"
 
 class ProductDetail(models.Model):
     title=models.CharField(max_length=255, null=True, blank=True)
@@ -92,3 +106,16 @@ class ProductVariantItem(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+class ProductTag(models.Model):
+    tag=models.CharField(max_length=120)
+    product_id=models.ForeignKey(Product, related_name='product_tags', on_delete=models.CASCADE)
+
+
+class ProductTransaction(models.Model):
+    TRANSACTION_TYPE_CHOICES=((1,"BUY"),(2,"SELL"),(3,"SETUP"))
+    transaction_type=models.IntegerField(choices=TRANSACTION_TYPE_CHOICES, default=1)
+    transaction_product_count=models.IntegerField(default=1)
+    transaction_description=models.CharField(max_length=255)
+    created=models.DateTimeField(auto_now_add=True)
+    product_id=models.ForeignKey(Product, related_name='product_transactions', on_delete=models.CASCADE)

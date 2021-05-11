@@ -1,0 +1,339 @@
+{% extends 'cms/base.html' %}
+{% block title %}
+Create Product
+{% endblock title %}
+
+
+{% block custom_css %}
+<link rel="stylesheet" href="//bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"/>
+<style>
+.bootstrap-tagsinput{
+    width: 100%;
+}
+</style>
+{% endblock custom_css %}
+
+{% block page_title %}
+Create Product
+{% endblock page_title %}
+
+{% block page_content %}
+<div class="row">
+    <div class="col-lg-12">
+        <form id="productForm">
+        {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <h5>Product Basic Details</h5>
+                    <hr>
+                    <div class="row"> 
+                        <div class="col-lg-6">
+                            <label>Product Name</label>
+                            <input class="form-control" name="product_name" placeholder="" />
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Brand</label>
+                            <input class="form-control" name="product_brand" placeholder="" />
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row"> 
+                        <div class="col-lg-6">
+                            <label>Url Slug</label>
+                            <input class="form-control" name="product_slug" placeholder=""/>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Category</label>
+                            <select name="product_sub_category" class="form-control">
+                                {% for category in category_list %}
+                                    <optgroup  label={{ category.category.name }}>
+                                        {% for sub in category.sub_category   %}
+                                            <option value="{{ sub.id }}">{{ sub.name }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row"> 
+                        <div class="col-lg-6">
+                            <label>Product Short Description</label>
+                            <input class="form-control" name="product_short_description" placeholder="" id="short_desc" />
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Merchant User</label>
+                            <select class="form-control" name="product_merchant">
+                            {% for merchant_user in merchant_users %}
+                                <option value="{{ merchant_user.id }}">{{ merchant_user.auth_user_id.first_name }} {{ merchant_user.auth_user_id.last_name }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        
+                    </div>
+                    <br>
+                    <div class="row"> 
+                        <div class="col-lg-12">
+                            <label>Product Long Description</label>
+                            <textarea class="form-control" name="product_long_description" id="long_desc"></textarea>
+                        </div>
+                    </div>
+                    <br>  
+                    <div class="row"> 
+                        <div class="col-lg-6">
+                            <label>Price</label>
+                            <input class="form-control" name="product_price" placeholder="" />
+                        </div>
+                        <div class="col-lg-6">
+                            <label>In Stock Total</label>
+                            <input class="form-control" name="product_in_stock_total" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+            </div>  
+
+            <div class="card">
+                <div class="card-body">
+                    <h5>Product Media</h5>
+                    <hr>
+
+                    <div class="media_div" id="product-media">
+                        <div class="row media_div_row first_media">
+                            <div class="col-lg-4 mb-3">
+                                <label>Media Type</label>
+                                <select name="media_type[]" class="form-control media_type">
+                                    <option value="1">Image</option>
+                                    <option value="2">Video</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label>Select Media</label>
+                                <input type="file" name="media_content[]" class="form-control select_media" />
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <label>Preview</label>
+                                <br>
+                                <img style="width:100%;display:none" class="img_preview img-thumbnail">
+                                <br>
+                                <video style="width:100%;display:none" class="video_preview img-thumbnail" controls>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <a href="#product-media" class="btn btn-icon btn-success mr-2 add_media"><i class="fas fa-plus"></i> ADD MEDIA</a>
+                            <a href="#product-media" class="btn btn-icon btn-danger remove_media"><i class="fas fa-minus-circle"></i> REMOVE MEDIA</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card" id="product-more-details">
+                <div class="card-body">
+                    <h5>Product More Details</h5>
+                    <hr>
+                    <div class="details_div">
+                        <div class="row details_div_row first_details">
+                            <div class="col-lg-6 mb-3">
+                                <label>Title</label>
+                                <input type="text" name="title_title[]" class="form-control title_title" placeholder="">
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label>Details</label>
+                                <input type="text" name="title_details[]" class="form-control title_details" placeholder=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <a href="#product-more-details" class="btn btn-icon btn-success mr-2 add_details"><i class="fas fa-plus"></i> ADD DETAILS</a>
+                            <a href="#product-more-details" class="btn btn-icon btn-danger remove_details"><i class="fas fa-minus-circle"></i> REMOVE DETAILS</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="product-about">
+                <div class="card-body">
+                    <h5>Product About</h5>
+                    <hr>
+                    <div class="about_div">
+                        <div class="row about_div_row first_about">
+                            <div class="col-lg-12">
+                                <label>Title</label>
+                                <input type="text" name="about_title[]" class="form-control about_title" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <a href="#product-about" class="btn btn-icon btn-success mr-2 add_about"><i class="fas fa-plus"></i> ADD ABOUT</a>
+                            <a href="#product-about" class="btn btn-icon btn-danger remove_about"><i class="fas fa-minus-circle"></i> REMOVE ABOUT</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="product-tags">
+                <div class="card-body">
+                    <h5>Product Tags</h5>
+                    <hr>
+                    <div class="col-lg-12">
+                        <input type="text" name="product_tags"  data-role="tagsinput"  />
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-lg-12">
+                            <div class='progress mb-3' style="height:auto">
+                                <div class="progress-bar bg-warning" id="progressbar" role="progressbar" data-width="0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="display:none;width: 0%;height: 30px;border-radius: 10px;">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-block submit_btn mt-5">ADD PRODUCT</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    
+</div>
+{% endblock page_content %}
+
+
+{% block custom_js %}
+{% comment %} Tiny MCE {% endcomment %}
+<script src="//cdn.tiny.cloud/1/f2rkbc3dctxrbtvg56h17qkspz197y3fd9q28dnwt2frj6gj/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    tinymce.init({
+        selector: "textarea#long_desc",
+        height: 300,
+        plugins: [
+            "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+            "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking",
+            "save table contextmenu directionality emoticons template paste textcolor",
+        ],
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons",  
+    });
+</script>
+
+<script>
+    // Takes care of adding and removing media div
+    $(".add_media").click(function(){
+        var media_row = $(".first_media").clone();
+        media_row.removeClass("first_media");
+        media_row.replaceAll("src","")
+        media_row.find(".select_media").val("");
+        media_row.find(".img_preview").attr("src","").css({"border":"none"}).css({"border-radius":"0px"}).hide();
+        media_row.find(".video_preview").attr("src","").css({"border":"none"}).css({"border-radius":"0px"}).hide();
+        $(".media_div").append(media_row);
+    });
+    $(".remove_media").click(function(){
+        if($(".media_div").find(".media_div_row").length > 1){
+            $(".media_div").children().last().remove();
+        }
+        else{
+            $(".media_div").find(".img_preview").hide();
+            $(".media_div").find(".video_preview").hide();
+            $(".media_div").find(".select_media").val("");
+        }
+    });
+
+    // Takes care of adding and removing details div
+    $(".add_details").click(function(){
+        var details_row = $(".first_details").clone();
+        details_row.removeClass("first_details");
+        details_row.find(".title_title").val("");
+        details_row.find(".title_details").val("");
+        $(".details_div").append(details_row);
+    });
+    $(".remove_details").click(function(){
+        if($(".details_div").find(".details_div_row").length > 1){
+            $(".details_div").children().last().remove();
+        }
+    });
+
+    // Takes care of adding and removing about div
+    $(".add_about").click(function(){
+        var about_row = $(".first_about").clone();
+        about_row.removeClass("first_about");
+        about_row.find(".about_title").val("");
+        $(".about_div").append(about_row);
+    });
+    $(".remove_about").click(function(){
+        if($(".about_div").find(".about_div_row").length > 1){
+            $(".about_div").children().last().remove();
+        }
+    });
+
+    // Preview
+    $(document).on("change",".select_media",function(){
+        var media_type = $(this).parents(".media_div_row").find(".media_type").val();
+        var img_preview = $(this).parents(".media_div_row").find(".img_preview");
+        var vid_preview = $(this).parents(".media_div_row").find(".video_preview");
+        showPreviewMedia(this, media_type, img_preview, vid_preview);
+    });
+
+    function showPreviewMedia(input, media_type, img_preview, video_preview){
+        if(input.files && input.files[0]){
+            var reader = new FileReader();
+            reader.onload = function(e){
+                if(media_type == "1"){
+                    img_preview.attr("src", e.target.result);
+                    img_preview.show();
+                }
+                if(media_type == "2"){
+                    video_preview.show();
+                    video_preview.attr("src", e.target.result);
+                    video_preview.load();
+                    video_preview.play();
+
+                }
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $(".submit_btn").click(function(){
+        console.log('button cliecked')
+        var form = new FormData($("#productForm")[0]);
+        form.append("long_desc", tinyMCE.activeEditor.getContent());
+
+        // Ajax code
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.status == 200){
+                console.log(xhr.responseText);
+            }
+        }
+        xhr.open("POST","{% url 'cms:product_create_view' %}", true);
+
+        $("#progressbar").show();
+
+        // Updating progress bar
+        xhr.upload.addEventListener("progress", function(ev) {
+            if(ev.lengthComputable) {
+                var percentage = (ev.loaded/ev.total*100|0);
+                $("#progressbar").css({"width":""+percentage+"%"}).text("Uploading .."+percentage+"%");
+                console.log(percentage);
+            }
+        });
+
+        xhr.send(form);
+    })
+
+
+</script>
+<script src="//bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
+
+{% endblock custom_js %}

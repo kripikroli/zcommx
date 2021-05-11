@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView, View
 
 from profiles.models import (
     CustomUser,
@@ -18,16 +18,166 @@ from profiles.models import (
 from products.models import (
     Category, 
     SubCategory,
+    Product,
+    ProductMedia,
+    ProductDetail,
+    ProductAbout,
+    ProductVariant,
+    ProductVariantItem,
+    ProductTag,
+    ProductTransaction
 )
 
 
-"""
-User Merchant Views
-cms:user_merchant_list
-cms:user_merchant_create
-cms:user_merchant_update
-"""
+class ProductListView(ListView):
+    model = Product
+    template_name = 'cms/product_list.html'
+    paginate_by = 3
+
+    def get_queryset(self):
+
+        filter_val = self.request.GET.get('filter', '')
+        order_by = self.request.GET.get('orderby', 'id')
+
+        if filter_val != '':
+            products = Product.objects.filter(Q(name__contains=filter_val) | Q(short_description__contains=filter_val)).order_by(order_by)
+        else:
+            products = Product.objects.all().order_by(order_by)
+        
+        product_list = []
+        print(products)
+        for product in products:
+            product_media = ProductMedia.objects.filter(product_id=product.id, media_type=1, is_active=1).first()
+            product_list.append({"product": product, "media": product_media})
+
+        return product_list
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductListView, self).get_context_data(**kwargs)
+        context['filter'] = self.request.GET.get('filter', '')
+        context['orderby'] = self.request.GET.get('orderby', 'id')
+        context['all_table_fields'] = Product._meta.get_fields()
+        return context
+
+
+class ProductCreateView(View):
+    def get(self, request, *args, **kwargs):
+        categories = Category.objects.filter(is_active=1)
+        category_list=[]
+
+        for category in categories:
+            sub_category = SubCategory.objects.filter(is_active=1, category_id=category.id)
+            category_list.append({'category': category, 'sub_category': sub_category})
+
+        merchant_users = MerchantUser.objects.filter(auth_user_id__is_active=True)
+
+        context = {
+            "category_list": category_list,
+            "merchant_users": merchant_users
+        }
+
+        return render(request, 'cms/product_create.html', context)
+
+    def post(self, request, *args, **kwargs):
+
+        # Product basic details
+        name = request.POST.get('product_name')
+        slug = request.POST.get('product_slug')
+        short_description = request.POST.get('product_short_description')
+        long_description = request.POST.get('long_desc')
+        brand = request.POST.get('product_brand')
+        price = request.POST.get('product_price')
+        subcategory_id = request.POST.get('product_sub_category')
+        merchant_id = request.POST.get('product_merchant')
+
+        # Product media
+        media_types = request.POST.getlist('media_type[]')
+        media_contents = request.FILES.getlist('media_content[]')
+
+        print(media_contents)
+
+        # Product more details
+        title_title_list = request.POST.getlist('title_title[]')
+        title_detail_list = request.POST.getlist('title_details[]')
+
+        # Product abouts
+        about_title_list = request.POST.getlist('about_title[]')
+
+        # Product tags
+        product_tags = request.POST.get('product_tags')
+
+        
+        # Foreignkey objects
+        subcategory_obj = SubCategory.objects.get(id=subcategory_id)
+        merchant_obj = MerchantUser.objects.get(id=merchant_id)
+
+        # Saving product
+        product_obj = Product(
+            name=name,
+            slug=slug,
+            short_description=short_description,
+            long_description=long_description,
+            brand=brand,
+            price=price,
+            subcategory_id=subcategory_obj,
+            merchant_id=merchant_obj
+        )
+        product_obj.save()
+
+        # Saving product media
+        i = 0
+        for media_content in media_contents:
+            # fs = FileSystemStorage()
+            # fn = fs.save(media_content.name, media_content)
+            # media_url = fs.url(fn)
+            product_media_obj = ProductMedia(
+                product_id=product_obj,
+                media_type=media_types[i],
+                media_content=media_content
+            )
+            product_media_obj.save()
+            i += 1
+
+        # Saving product more details
+        j = 0
+        for title_title in title_title_list:
+            product_details_obj = ProductDetail(
+                title=title_title,
+                details=title_detail_list[j],
+                product_id=product_obj
+            )
+            product_details_obj.save()
+            j += 1
+
+        # Saving product abouts
+        for about in about_title_list:
+            product_about_obj = ProductAbout(title=about, product_id=product_obj)
+            product_about_obj.save()
+
+        # Saving product tags
+        product_tag_list = product_tags.split(',')
+        for product_tag in product_tag_list:
+            product_tag_obj = ProductTag(tag=product_tag, product_id=product_obj)
+            product_tag_obj.save()
+
+        # Saving product transaction
+        product_transaction_obj = ProductTransaction(
+            transaction_type=3,
+            transaction_description='Added product: media-details-about-tags',
+            product_id=product_obj
+        )
+        product_transaction_obj.save()
+
+        # Return message
+        return HttpResponse("ok")
+
+
 class UserMerchantListView(SuccessMessageMixin, ListView):
+    """
+    UserMerchantListView
+    cms:user_merchant_list_view
+    """
+
     model = MerchantUser
     success_message = 'Merchant added successfully!'
     fields = '__all__'
@@ -59,6 +209,11 @@ class UserMerchantListView(SuccessMessageMixin, ListView):
 
 
 class UserMerchantCreateView(SuccessMessageMixin, CreateView):
+    """
+    UserMerchantCreateView
+    cms:user_merchant_create_view
+    """
+
     model = CustomUser
     template_name = 'cms/user_merchant_create.html'
     success_message = 'Merchant added successfully!'
@@ -104,6 +259,11 @@ class UserMerchantCreateView(SuccessMessageMixin, CreateView):
 
 
 class UserMerchantUpdateView(SuccessMessageMixin, UpdateView):
+    """
+    UserMerchantUpdateView
+    cms:user_merchant_update_view
+    """
+
     model = CustomUser
     template_name = 'cms/user_merchant_update.html'
     success_message = 'Merchant updated successfully!'
@@ -156,13 +316,12 @@ class UserMerchantUpdateView(SuccessMessageMixin, UpdateView):
         return HttpResponseRedirect(reverse('cms:user_merchant_list_view'))
 
 
-"""
-Category Views
-cms:category_list
-cms:category_create
-cms:category_update
-"""
 class CategoryListView(ListView):
+    """
+    CategoryListView
+    cms:category_list_view
+    """
+
     model = Category
     template_name = 'cms/category_list.html'
 
@@ -192,25 +351,35 @@ class CategoryListView(ListView):
 
 
 class CategoryCreateView(SuccessMessageMixin, CreateView):
+    """
+    CategoryCreateView
+    cms:category_create_view
+    """
+
     model = Category
     success_message = 'Category added successfully!'
     fields = '__all__'
     template_name = 'cms/category_create.html'
 
+
 class CategoryUpdateView(SuccessMessageMixin, UpdateView):
+    """
+    CategoryUpdateView
+    cms:category_update_view
+    """
+
     model = Category
     success_message = 'Category updated successfully!'
     fields = '__all__'
     template_name = 'cms/category_update.html'
 
 
-"""
-SubCategory Views
-cms:sub_category_list
-cms:sub_category_create
-cms:sub_category_update
-"""
 class SubCategoryListView(ListView):
+    """
+    SubCategoryListView
+    cms:subcategory_list_view
+    """
+
     model = SubCategory
     template_name = 'cms/sub_category_list.html'
 
@@ -240,6 +409,11 @@ class SubCategoryListView(ListView):
 
 
 class SubCategoryCreateView(SuccessMessageMixin, CreateView):
+    """
+    SubCategoryCreateView
+    cms:subcategory_create_view
+    """
+
     model = SubCategory
     success_message = 'SubCategory added successfully!'
     fields = fields = (
@@ -253,7 +427,13 @@ class SubCategoryCreateView(SuccessMessageMixin, CreateView):
     )
     template_name = 'cms/sub_category_create.html'
 
+
 class SubCategoryUpdateView(SuccessMessageMixin, UpdateView):
+    """
+    SubCategoryUpdateView
+    cms:subcategory_update_view
+    """
+
     model = SubCategory
     success_message = 'SubCategory updated successfully!'
     fields = (
@@ -268,17 +448,22 @@ class SubCategoryUpdateView(SuccessMessageMixin, UpdateView):
     template_name = 'cms/sub_category_update.html'
 
 
-
-"""
-Authentication Views
-login
-logout
-"""
 def cms_logout_view(request):
+    """
+    cms_logout_view
+    cms:logout_view
+    """
+
     logout(request)
     return redirect('cms:cms_login_view')
 
+
 def cms_login_view(request):
+    """
+    cms_login_view
+    cms:login_view
+    """
+
     error_message = None
     form = AuthenticationForm()
 
@@ -305,11 +490,10 @@ def cms_login_view(request):
     return render(request, 'cms/login.html', context)
 
 
-
-"""
-Home View
-home
-"""
 @login_required(login_url="/cms/")
 def home_view(request):
+    """
+    home_view
+    cms:home_view
+    """
     return render(request, 'cms/home.html')

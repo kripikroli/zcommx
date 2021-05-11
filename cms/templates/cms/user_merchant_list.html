@@ -19,8 +19,8 @@
 
                             <p class="lead pt-0 pb-0"><span>SORTED BY</span>: 
                                 <a href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby=id">ID | </a>
-                                <a href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby=name">NAME | </a>
-                                <a href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby=description">DESCRIPTION</a>
+                                <a href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby=company_name">NAME | </a>
+                                <a href="{% url 'cms:user_merchant_list_view' %}?filter={{ filter }}&orderby=bio">DESCRIPTION</a>
                             </p>
                         </div>
                         <form method="GET">
